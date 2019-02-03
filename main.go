@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	bootstrap.Start("127.0.0.1:8080", 30, "assets", func(w http.ResponseWriter, r *http.Request) {
+	bootstrap.Start(nil, "127.0.0.1:8080", 30, "assets", func(w http.ResponseWriter, r *http.Request) {
 		// Before callback
 		w.Header().Set("Cache-Control", "public, max-age=31536000")
 	}, func(w http.ResponseWriter, r *http.Request) {
