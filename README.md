@@ -37,7 +37,6 @@ func main() {
 		`))
 	})
 }
-
 ```
 Extra headers can be located in **before** callback. For example for cache control or server name. Logic can be located in **after** callback. If mounted resource file will pushed, **after** callback will not fired. Mounted resources in priority.
 ```

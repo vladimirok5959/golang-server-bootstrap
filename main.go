@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"golang-server-bootstrap/bootstrap"
+	"github.com/vladimirok5959/golang-server-bootstrap/bootstrap"
 )
 
 func main() {
