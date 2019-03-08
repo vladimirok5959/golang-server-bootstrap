@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"syscall"
 )
 
 type hndl func(h http.Handler) http.Handler
@@ -70,7 +71,8 @@ func Start(h hndl, host string, timeout time.Duration, path string, before callb
 	}
 
 	stop := make(chan os.Signal)
-	signal.Notify(stop, os.Interrupt)
+	signal.Notify(stop, syscall.SIGTERM)
+	signal.Notify(stop, syscall.SIGINT)
 	go func() {
 		fmt.Printf("Starting server at http://%s/\n", host)
 		if err := srv.ListenAndServe(); err != nil {
