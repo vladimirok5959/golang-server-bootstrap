@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 	"syscall"
+	"time"
 )
 
 type hndl func(h http.Handler) http.Handler
@@ -79,6 +79,7 @@ func Start(h hndl, host string, timeout time.Duration, path string, before callb
 			if err != http.ErrServerClosed {
 				fmt.Println(err)
 				stop <- os.Interrupt
+				os.Exit(1)
 			}
 		}
 	}()
@@ -88,5 +89,6 @@ func Start(h hndl, host string, timeout time.Duration, path string, before callb
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 }
