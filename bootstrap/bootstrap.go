@@ -10,17 +10,17 @@ import (
 	"time"
 )
 
-type hndl func(h http.Handler) http.Handler
-type callback func(w http.ResponseWriter, r *http.Request)
+type customHandler func(h http.Handler) http.Handler
+type callbackBeforeAfter func(w http.ResponseWriter, r *http.Request)
 type callbackServer func(s *http.Server)
 
 type bootstrap struct {
 	path   string
-	before callback
-	after  callback
+	before callbackBeforeAfter
+	after  callbackBeforeAfter
 }
 
-func new(path string, before callback, after callback) *bootstrap {
+func new(path string, before callbackBeforeAfter, after callbackBeforeAfter) *bootstrap {
 	return &bootstrap{path, before, after}
 }
 
@@ -54,7 +54,7 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Start(h hndl, host string, timeout time.Duration, path string, before callback, after callback, cbserv callbackServer) {
+func Start(h customHandler, host string, timeout time.Duration, path string, before callbackBeforeAfter, after callbackBeforeAfter, cbserv callbackServer) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", new(path, before, after).handler)
 
