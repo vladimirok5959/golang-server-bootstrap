@@ -12,6 +12,7 @@ import (
 
 type hndl func(h http.Handler) http.Handler
 type callback func(w http.ResponseWriter, r *http.Request)
+type callbackServer func(s *http.Server)
 
 type bootstrap struct {
 	path   string
@@ -53,7 +54,7 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Start(h hndl, host string, timeout time.Duration, path string, before callback, after callback) {
+func Start(h hndl, host string, timeout time.Duration, path string, before callback, after callback, cbserv callbackServer) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", new(path, before, after).handler)
 
@@ -68,6 +69,10 @@ func Start(h hndl, host string, timeout time.Duration, path string, before callb
 			Addr:    host,
 			Handler: h(mux),
 		}
+	}
+
+	if cbserv != nil {
+		cbserv(srv)
 	}
 
 	stop := make(chan os.Signal)

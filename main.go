@@ -21,5 +21,5 @@ func main() {
 			<div><a href="/assets/jquery.js">/assets/jquery.js</a></div>
 			<div><a href="/assets/popper.js">/assets/popper.js</a></div>
 		`))
-	})
+	}, nil)
 }
