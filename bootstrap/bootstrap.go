@@ -88,8 +88,16 @@ func Start(h customHandler, host string, timeout time.Duration, path string, bef
 			}
 		}
 	}()
-	<-stop
-	fmt.Println("Shutting down server...")
+
+	switch val := <-stop; val {
+	case syscall.SIGTERM:
+		fmt.Println("Shutting down server (terminate)...")
+	case syscall.SIGINT:
+		fmt.Println("Shutting down server (interrupt)...")
+	default:
+		fmt.Println("Shutting down server...")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
