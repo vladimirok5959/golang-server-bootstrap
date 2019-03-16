@@ -9,13 +9,13 @@ import (
 const path = "assets"
 
 func handle() http.Handler {
-	b := new(path, func(w http.ResponseWriter, r *http.Request) {
+	b := new(path, func(w http.ResponseWriter, r *http.Request, o *interface{}) {
 		w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")
-	}, func(w http.ResponseWriter, r *http.Request) {
+	}, func(w http.ResponseWriter, r *http.Request, o *interface{}) {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`Hello World!`))
-	})
+	}, nil)
 	return http.HandlerFunc(b.handler)
 }
 
