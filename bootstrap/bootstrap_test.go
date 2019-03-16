@@ -8,14 +8,26 @@ import (
 
 const path = "assets"
 
+type someTestStruct struct {
+	Name string
+}
+
 func handle() http.Handler {
-	b := new(path, func(w http.ResponseWriter, r *http.Request, o *interface{}) {
+	obj := &someTestStruct{Name: "TestValue"}
+
+	b := new(path, func(w http.ResponseWriter, r *http.Request, o interface{}) {
 		w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")
-	}, func(w http.ResponseWriter, r *http.Request, o *interface{}) {
+	}, func(w http.ResponseWriter, r *http.Request, o interface{}) {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte(`Hello World!`))
-	}, nil)
+
+		var str string
+		if m, ok := o.(*someTestStruct); ok {
+			str = m.Name
+		}
+
+		w.Write([]byte(`Hello World! (` + str + `)`))
+	}, obj)
 	return http.HandlerFunc(b.handler)
 }
 
@@ -85,7 +97,7 @@ func TestAfterCallBack(t *testing.T) {
 	if c := r.Header().Get("Content-Type"); c != "text/html" {
 		t.Fatalf("content type header not match: got (%v) want (%v)", c, "text/html")
 	}
-	if r.Body.String() != "Hello World!" {
+	if r.Body.String() != "Hello World! (TestValue)" {
 		t.Fatalf("bad body response, not match")
 	}
 }

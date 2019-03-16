@@ -11,17 +11,17 @@ import (
 )
 
 type customHandler func(h http.Handler) http.Handler
-type callbackBeforeAfter func(w http.ResponseWriter, r *http.Request, o *interface{})
+type callbackBeforeAfter func(w http.ResponseWriter, r *http.Request, o interface{})
 type callbackServer func(s *http.Server)
 
 type bootstrap struct {
 	path   string
 	before callbackBeforeAfter
 	after  callbackBeforeAfter
-	object *interface{}
+	object interface{}
 }
 
-func new(path string, before callbackBeforeAfter, after callbackBeforeAfter, object *interface{}) *bootstrap {
+func new(path string, before callbackBeforeAfter, after callbackBeforeAfter, object interface{}) *bootstrap {
 	return &bootstrap{path, before, after, object}
 }
 
@@ -55,7 +55,7 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Start(h customHandler, host string, timeout time.Duration, path string, before callbackBeforeAfter, after callbackBeforeAfter, cbserv callbackServer, object *interface{}) {
+func Start(h customHandler, host string, timeout time.Duration, path string, before callbackBeforeAfter, after callbackBeforeAfter, cbserv callbackServer, object interface{}) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", new(path, before, after, object).handler)
 
