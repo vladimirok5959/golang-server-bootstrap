@@ -36,7 +36,7 @@ func new(ctx context.Context, opts *Opts) *bootstrap {
 
 func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	if this.opts.Before != nil {
-		this.opts.Before(r.Context(), w, r, this.opts.Object)
+		this.opts.Before(this.ctx, w, r, this.opts.Object)
 	}
 	if r.URL.Path == "/"+this.opts.Path+"/bootstrap.css" {
 		w.Header().Set("Cache-Control", "public, max-age=31536000")
@@ -60,11 +60,11 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if this.opts.After != nil {
-		this.opts.After(r.Context(), w, r, this.opts.Object)
+		this.opts.After(this.ctx, w, r, this.opts.Object)
 	}
 }
 
-func Start(ctx context.Context, opts *Opts) {
+func Start(opts *Opts) {
 	if opts == nil {
 		fmt.Println("Start: options is not defined")
 		os.Exit(1)

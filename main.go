@@ -10,7 +10,6 @@ import (
 
 func main() {
 	bootstrap.Start(
-		context.Background(),
 		&bootstrap.Opts{
 			Host:    "127.0.0.1:8080",
 			Timeout: 8 * time.Second,

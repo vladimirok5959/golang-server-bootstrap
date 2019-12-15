@@ -24,7 +24,6 @@ import (
 
 func main() {
 	bootstrap.Start(
-		context.Background(),
 		&bootstrap.Opts{
 			Host:    "127.0.0.1:8080",
 			Timeout: 8 * time.Second,
@@ -52,7 +51,7 @@ func main() {
 Extra headers can be located in **before** callback. For example for cache control or server name. Logic can be located in **after** callback. If mounted resource file will pushed, **after** callback will not fired. Mounted resources in priority.
 ```
 type callbackBeforeAfter func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{})
-func Start(ctx context.Context, opts *bootstrap.Opts)
+func Start(opts *bootstrap.Opts)
 ```
 Where **host** is server ip and port (127.0.0.1:8080), **timeout** is time in seconds to force server shutdown if server don't want stopping, **path** is virtual path for mounted files (for example if path will be "assets", then bootstrap css file will be located at http://127.0.0.1:8080/assets/bootstrap.css or if "system/assets", then http://127.0.0.1:8080/system/assets/bootstrap.css), **before** and **after** is callback functions for integration.
 
