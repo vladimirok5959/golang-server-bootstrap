@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,19 +16,27 @@ type someTestStruct struct {
 func handle() http.Handler {
 	obj := &someTestStruct{Name: "TestValue"}
 
-	b := new(path, func(w http.ResponseWriter, r *http.Request, o interface{}) {
-		w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")
-	}, func(w http.ResponseWriter, r *http.Request, o interface{}) {
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		w.Header().Set("Content-Type", "text/html")
+	b := new(
+		context.Background(),
+		&Opts{
+			Path:   path,
+			Object: obj,
+			Before: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{}) {
+				w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")
+			},
+			After: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{}) {
+				w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+				w.Header().Set("Content-Type", "text/html")
 
-		var str string
-		if m, ok := o.(*someTestStruct); ok {
-			str = m.Name
-		}
+				var str string
+				if m, ok := o.(*someTestStruct); ok {
+					str = m.Name
+				}
 
-		w.Write([]byte(`Hello World! (` + str + `)`))
-	}, obj)
+				w.Write([]byte(`Hello World! (` + str + `)`))
+			},
+		},
+	)
 	return http.HandlerFunc(b.handler)
 }
 

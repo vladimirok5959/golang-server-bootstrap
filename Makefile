@@ -14,7 +14,7 @@ build:
 	@go build -o ./golang-server-bootstrap
 
 run: build
-	@./golang-server-bootstrap
+	@./golang-server-bootstrap --color=always
 
 clean:
 	@rm -r ./golang-server-bootstrap
