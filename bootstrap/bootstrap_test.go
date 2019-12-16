@@ -19,7 +19,7 @@ func handle() http.Handler {
 	b := new(
 		context.Background(),
 		&Opts{
-			Path:   path,
+			Path:    path,
 			Objects: &[]Iface{obj},
 			Before: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o *[]Iface) {
 				w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")

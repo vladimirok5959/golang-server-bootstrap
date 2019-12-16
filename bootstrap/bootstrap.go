@@ -10,21 +10,26 @@ import (
 	"github.com/vladimirok5959/golang-ctrlc/ctrlc"
 )
 
-type Iface interface {
-	// Any interface
-}
+type Handler func(h http.Handler) http.Handler
 
-type customHandler func(h http.Handler) http.Handler
-type callbackBeforeAfter func(ctx context.Context, w http.ResponseWriter, r *http.Request, o *[]Iface)
-type callbackServer func(s *http.Server)
+type CBServer func(s *http.Server)
+
+type Iface interface{}
+
+type BeforeAfter func(
+	ctx context.Context,
+	w http.ResponseWriter,
+	r *http.Request,
+	o *[]Iface,
+)
 
 type Opts struct {
-	Handle  customHandler
+	Handle  Handler
 	Host    string
 	Path    string
-	Before  callbackBeforeAfter
-	After   callbackBeforeAfter
-	Cbserv  callbackServer
+	Cbserv  CBServer
+	Before  BeforeAfter
+	After   BeforeAfter
 	Objects *[]Iface
 	Timeout time.Duration
 }
