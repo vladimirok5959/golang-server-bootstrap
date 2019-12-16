@@ -1,0 +1,2 @@
+# github.com/vladimirok5959/golang-ctrlc v1.0.2
+github.com/vladimirok5959/golang-ctrlc/ctrlc

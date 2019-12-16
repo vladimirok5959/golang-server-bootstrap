@@ -1,20 +1,17 @@
-default: help
+default: debug test run
 
-help:
-	@echo "make help  - help text"
-	@echo "make test  - run tests"
-	@echo "make build - build demo"
-	@echo "make run   - build and run demo"
-	@echo "make clean - remove builded file"
+debug:
+	go vet ./...
+	gofmt -d ./
+	gofmt -w ./
+	go build -mod vendor -o ./out
 
 test:
-	@go test -v ./...
+	go test ./...
 
-build:
-	@go build -o ./golang-server-bootstrap
+run:
+	@./out --color=always
 
-run: build
-	@./golang-server-bootstrap --color=always
-
-clean:
-	@rm -r ./golang-server-bootstrap
+update:
+	go mod vendor
+	go mod download
