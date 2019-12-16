@@ -14,22 +14,22 @@ type someTestStruct struct {
 }
 
 func handle() http.Handler {
-	obj := &someTestStruct{Name: "TestValue"}
+	obj := someTestStruct{Name: "TestValue"}
 
 	b := new(
 		context.Background(),
 		&Opts{
 			Path:   path,
-			Object: obj,
-			Before: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{}) {
+			Objects: &[]Iface{obj},
+			Before: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o *[]Iface) {
 				w.Header().Set("MyCustomHeaderName", "MyCustomHeaderValue")
 			},
-			After: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{}) {
+			After: func(ctx context.Context, w http.ResponseWriter, r *http.Request, o *[]Iface) {
 				w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 				w.Header().Set("Content-Type", "text/html")
 
 				var str string
-				if m, ok := o.(*someTestStruct); ok {
+				if m, ok := (*o)[0].(someTestStruct); ok {
 					str = m.Name
 				}
 

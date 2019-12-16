@@ -10,19 +10,23 @@ import (
 	"github.com/vladimirok5959/golang-ctrlc/ctrlc"
 )
 
+type Iface interface {
+	// Any interface
+}
+
 type customHandler func(h http.Handler) http.Handler
-type callbackBeforeAfter func(ctx context.Context, w http.ResponseWriter, r *http.Request, o interface{})
+type callbackBeforeAfter func(ctx context.Context, w http.ResponseWriter, r *http.Request, o *[]Iface)
 type callbackServer func(s *http.Server)
 
 type Opts struct {
 	Handle  customHandler
 	Host    string
-	Timeout time.Duration
 	Path    string
 	Before  callbackBeforeAfter
 	After   callbackBeforeAfter
 	Cbserv  callbackServer
-	Object  interface{}
+	Objects *[]Iface
+	Timeout time.Duration
 }
 
 type bootstrap struct {
@@ -36,7 +40,7 @@ func new(ctx context.Context, opts *Opts) *bootstrap {
 
 func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	if this.opts.Before != nil {
-		this.opts.Before(this.ctx, w, r, this.opts.Object)
+		this.opts.Before(this.ctx, w, r, this.opts.Objects)
 	}
 	if r.URL.Path == "/"+this.opts.Path+"/bootstrap.css" {
 		w.Header().Set("Cache-Control", "public, max-age=31536000")
@@ -60,7 +64,7 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if this.opts.After != nil {
-		this.opts.After(this.ctx, w, r, this.opts.Object)
+		this.opts.After(this.ctx, w, r, this.opts.Objects)
 	}
 }
 
