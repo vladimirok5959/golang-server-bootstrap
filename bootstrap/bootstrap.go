@@ -23,15 +23,18 @@ type BeforeAfter func(
 	o *[]Iface,
 )
 
+type ShutdownFunc func(ctx context.Context, o *[]Iface) error
+
 type Opts struct {
-	Handle  Handler
-	Host    string
-	Path    string
-	Cbserv  CBServer
-	Before  BeforeAfter
-	After   BeforeAfter
-	Objects *[]Iface
-	Timeout time.Duration
+	Handle   Handler
+	Host     string
+	Path     string
+	Cbserv   CBServer
+	Before   BeforeAfter
+	After    BeforeAfter
+	Objects  *[]Iface
+	Timeout  time.Duration
+	Shutdown ShutdownFunc
 }
 
 type bootstrap struct {
@@ -73,6 +76,13 @@ func (this *bootstrap) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (this *bootstrap) Shutdown(ctx context.Context) error {
+	if this.opts.Shutdown != nil {
+		return this.opts.Shutdown(ctx, this.opts.Objects)
+	}
+	return nil
+}
+
 func Start(opts *Opts) {
 	if opts == nil {
 		fmt.Println("Start: options is not defined")
@@ -82,8 +92,10 @@ func Start(opts *Opts) {
 	ctrlc.App(
 		opts.Timeout,
 		func(ctx context.Context, shutdown context.CancelFunc) *[]ctrlc.Iface {
+			bt := new(ctx, opts)
+
 			mux := http.NewServeMux()
-			mux.HandleFunc("/", new(ctx, opts).handler)
+			mux.HandleFunc("/", bt.handler)
 
 			var srv *http.Server
 			if opts.Handle == nil {
@@ -113,7 +125,7 @@ func Start(opts *Opts) {
 				}
 			}()
 
-			return &[]ctrlc.Iface{srv}
+			return &[]ctrlc.Iface{bt, srv}
 		},
 	)
 }
