@@ -76,19 +76,19 @@ func check_resource(t *testing.T, file string, ctype string, body []byte) {
 }
 
 func TestBootstrapCss(t *testing.T) {
-	check_resource(t, "bootstrap.css", "text/css", resource_bootstrap_css)
+	check_resource(t, "bootstrap.css", "text/css", rbc)
 }
 
 func TestBootstrapJs(t *testing.T) {
-	check_resource(t, "bootstrap.js", "application/javascript; charset=utf-8", resource_bootstrap_js)
+	check_resource(t, "bootstrap.js", "application/javascript; charset=utf-8", rbj)
 }
 
 func TestJqueryJs(t *testing.T) {
-	check_resource(t, "jquery.js", "application/javascript; charset=utf-8", resource_jquery_js)
+	check_resource(t, "jquery.js", "application/javascript; charset=utf-8", rjj)
 }
 
 func TestPopperJs(t *testing.T) {
-	check_resource(t, "popper.js", "application/javascript; charset=utf-8", resource_popper_js)
+	check_resource(t, "popper.js", "application/javascript; charset=utf-8", rpj)
 }
 
 func TestBeforeCallBack(t *testing.T) {
