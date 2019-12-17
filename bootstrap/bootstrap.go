@@ -55,7 +55,6 @@ func etag(str string) string {
 }
 
 func modified(p string, s int, v int64, w http.ResponseWriter, r *http.Request) bool {
-	w.Header().Set("Content-Length", fmt.Sprintf("%d", s))
 	w.Header().Set("Cache-Control", "no-cache")
 
 	// Set: ETag
