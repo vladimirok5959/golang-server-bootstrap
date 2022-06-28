@@ -1,3 +1,5 @@
+**ARCHIVED: because Go has build in mechanism for including any static file into compiled application, google for import '_ "embed"' and '//go:embed'**
+
 # golang-server-bootstrap
 Simple http server wrapper + bootstrap + jquery
 
